@@ -1,10 +1,14 @@
 <?php
 // PHP-код для обработки данных формы
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = htmlspecialchars($_POST['username']);
-    $password = htmlspecialchars($_POST['password']);
+    $username = isset($_POST['username']) ? $_POST['username'] : null;
+    $password = isset($_POST['password']) ? $_POST['password'] : null;
     
-    echo "<div class='alert alert-success'>Пользователь $username успешно зарегистрирован!</div>";
+    if ($username && $password) {
+        echo "<div class='alert alert-success'>Пользователь " . htmlspecialchars($username) ." успешно зарегистрирован!</div>";
+    } else {
+        echo "<div class='alert alert-danger'>Пожалуйста, заполните все поля.</div>";
+    }    
 }
 ?>
 
