@@ -3,12 +3,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Repositories\UserRepository;
 use Services\AuthService;
+use Factories\UserFactory;
 use DB\DBConnection;
 
 // Инициализация компонентов
 $dbConnection = DBConnection::getInstance()->connect();
 $userRepository = new UserRepository($dbConnection);
-$authService = new AuthService($userRepository);
+$userFactory = new UserFactory();
+$authService = new AuthService($userRepository, $userFactory);
 
 // Обработка данных формы
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
