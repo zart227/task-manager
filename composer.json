@@ -1,0 +1,15 @@
+{
+    "name": "arthur/task-manager",
+    "autoload": {
+        "psr-4": {
+            "Arthur\\TaskManager\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "zart227",
+            "email": "zart227@gmail.com"
+        }
+    ],
+    "require": {}
+}

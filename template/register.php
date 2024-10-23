@@ -1,17 +1,3 @@
-<?php
-// PHP-код для обработки данных формы
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = isset($_POST['username']) ? $_POST['username'] : null;
-    $password = isset($_POST['password']) ? $_POST['password'] : null;
-    
-    if ($username && $password) {
-        echo "<div class='alert alert-success'>Пользователь " . htmlspecialchars($username) ." успешно зарегистрирован!</div>";
-    } else {
-        echo "<div class='alert alert-danger'>Пожалуйста, заполните все поля.</div>";
-    }    
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h2 class="text-center mb-4">Регистрация</h2>
 
         <!-- Форма отправляет данные методом POST -->
-        <form action="register.php" method="POST" class="border p-4 shadow-sm">
+        <form action="/register.php" method="POST" class="border p-4 shadow-sm">
             <div class="form-group">
                 <label for="username">Имя пользователя:</label>
                 <input type="text" name="username" id="username" class="form-control" required>
@@ -36,8 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
         </form>
-
-        <!-- Результат регистрации выводится выше формы (если был выполнен PHP-код) -->
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

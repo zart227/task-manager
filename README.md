@@ -1,17 +1,20 @@
 # Task Manager
 
-This is a simple PHP project that includes a user registration page. The registration form sends user data to the server via the POST method and uses Bootstrap for styling.
+This is a simple PHP project for managing tasks. It includes user registration, task management, and hierarchical task display, all built using object-oriented principles. The project uses interfaces, repositories, and services to structure the code, and database interaction is handled via PDO.
 
 ## Features
-- PHP-based user registration form.
-- Secure handling of form data using `POST` method.
-- Bootstrap-styled form with responsive design.
+- User registration with secure handling of form data using `POST` method.
+- Task management with hierarchical display of tasks (parent-child relationship).
+- Bootstrap-styled form with responsive design for registration.
+- Object-Oriented Programming (OOP) principles: interfaces, repositories, services.
+- PDO-based connection to the database for handling users and tasks.
 
 ## Prerequisites
 To run this project, you need to have the following installed on your machine:
 - PHP (v7.4 or higher)
 - Apache web server (or any other compatible web server)
 - OpenServer (Windows) or LAMP stack (Linux)
+- MySQL or any other database that supports PDO
 
 ## Installation
 
@@ -38,7 +41,25 @@ Make sure the web server has the appropriate access to the project files:
 sudo chmod -R 755 /var/www/html/task-manager
 ```
 
-### Step 4: Start Apache
+### Step 4: Configure the database
+1. Create a database for the project:
+   ```bash
+   mysql -u root -p
+   CREATE DATABASE task_manager;
+   ```
+2. Import the database schema (if available) or create the necessary tables manually.
+3. Update the database connection settings in `config/config.php`:
+   ```php
+   'db' => [
+       'host' => 'localhost',
+       'dbname' => 'task_manager',
+       'user' => 'root',
+       'password' => '',
+       'charset' => 'utf8'
+   ]
+   ```
+
+### Step 5: Start Apache
 Make sure your web server (Apache) is running. You can start or check the status using the following command for Linux:
 
 ```bash
@@ -49,8 +70,9 @@ sudo systemctl status apache2
 For Windows, start OpenServer by clicking the green flag in the OpenServer control panel.
 
 ## Usage
-Once everything is set up, you can access the registration page in your browser.
+Once everything is set up, you can access the application in your browser.
 
+### Registration
 For Ubuntu with LAMP, open:
 
 ```
@@ -60,12 +82,30 @@ http://localhost/task-manager/register.php
 For Windows with OpenServer, use the following:
 
 ```
-http://task-manager/
+http://task-manager/register.php
+```
+
+### Tasks
+To view the list of tasks:
+
+```
+http://localhost/task-manager/tasks.php
 ```
 
 ## Project Structure
-- **register.php**: The main PHP file that contains the form and logic to handle user registration via POST request.
-- **Bootstrap**: Linked via CDN for styling and responsive layout.
+- **public/**
+  - **index.php**: Main entry point for routing the application.
+  - **register.php**: Handles user registration.
+  - **tasks.php**: Displays the list of tasks.
+- **src/**
+  - **Interfaces/**: Contains interfaces for repositories and database connections.
+  - **Models/**: Contains the `User` and `Task` models.
+  - **Repositories/**: Handles data interactions for users and tasks.
+  - **Services/**: Contains services like `AuthService` for user registration and authentication.
+  - **DB/**: Contains the `DBConnection` class that manages the database connection.
+- **templates/**: Contains the HTML templates for `register.php` and `tasks.php`.
+- **config/**: Contains the configuration file `config.php` for database settings.
+- **vendor/**: Autoloaded classes and dependencies managed by Composer.
 
 ## License
 This project is licensed under the MIT License.
