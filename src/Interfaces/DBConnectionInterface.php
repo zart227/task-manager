@@ -1,5 +1,5 @@
 <?php
-namespace Interfaces;
+namespace Arthur\TaskManager\Interfaces;
 
 /**
  * Интерфейс для подключения к базе данных.

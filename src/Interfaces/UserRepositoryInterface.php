@@ -1,7 +1,7 @@
 <?php
-namespace Interfaces;
+namespace Arthur\TaskManager\Interfaces;
 
-use Models\User;
+use Arthur\TaskManager\Models\User;
 
 /**
  * Интерфейс для работы с пользователями.

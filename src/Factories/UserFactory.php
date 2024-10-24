@@ -1,8 +1,8 @@
 <?php
-namespace Factories;
+namespace Arthur\TaskManager\Factories;
 
-use Models\User;
-use Interfaces\UserFactoryInterface;
+use Arthur\TaskManager\Models\User;
+use Arthur\TaskManager\Interfaces\UserFactoryInterface;
 
 /**
  * Паттерн Factory Method для создания объектов User.

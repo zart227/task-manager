@@ -1,8 +1,8 @@
 <?php
-namespace Services;
+namespace Arthur\TaskManager\Services;
 
-use Repositories\UserRepository;
-use Factories\UserFactory;
+use Arthur\TaskManager\Repositories\UserRepository;
+use Arthur\TaskManager\Factories\UserFactory;
 
 /**
  * Сервис для регистрации и аутентификации пользователей.

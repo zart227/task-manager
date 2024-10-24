@@ -1,5 +1,5 @@
 <?php
-namespace Interfaces;
+namespace Arthur\TaskManager\Interfaces;
 
 /**
  * Интерфейс для стратегий отображения задач.

@@ -1,8 +1,8 @@
 <?php
-namespace Repositories;
+namespace Arthur\TaskManager\Repositories;
 
-use Models\User;
-use Interfaces\UserRepositoryInterface;
+use Arthur\TaskManager\Models\User;
+use Arthur\TaskManager\Interfaces\UserRepositoryInterface;
 use PDO;
 
 /**

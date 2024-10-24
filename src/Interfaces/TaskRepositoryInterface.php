@@ -1,7 +1,7 @@
 <?php
-namespace Interfaces;
+namespace Arthur\TaskManager\Interfaces;
 
-use Models\Task;
+use Arthur\TaskManager\Models\Task;
 
 /**
  * Интерфейс для работы с задачами.
@@ -18,4 +18,6 @@ interface TaskRepositoryInterface
     public function deleteTask(int $id): bool;
 
     public function getTasksByUserId(int $userId): array;
+
+    public function getAllTasks(): array;
 }

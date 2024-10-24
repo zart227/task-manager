@@ -1,7 +1,7 @@
 <?php
-namespace DB;
+namespace Arthur\TaskManager\DB;
 
-use Interfaces\DBConnectionInterface;
+use Arthur\TaskManager\Interfaces\DBConnectionInterface;
 use PDO;
 use Exception;
 

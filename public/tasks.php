@@ -1,11 +1,11 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Facades\TaskManagerFacade;
-use Repositories\TaskRepository;
-use Factories\TaskFactory;
-use DB\DBConnection;
-use Strategies\TreeTaskDisplayStrategy; // или ListTaskDisplayStrategy
+use Arthur\TaskManager\Facades\TaskManagerFacade;
+use Arthur\TaskManager\Repositories\TaskRepository;
+use Arthur\TaskManager\Factories\TaskFactory;
+use Arthur\TaskManager\DB\DBConnection;
+use Arthur\TaskManager\Strategies\TreeTaskDisplayStrategy; // или ListTaskDisplayStrategy
 
 // Инициализация компонентов
 $dbConnection = DBConnection::getInstance()->connect();

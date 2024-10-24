@@ -1,8 +1,8 @@
 <?php
-namespace Facades;
+namespace Arthur\TaskManager\Facades;
 
-use Repositories\TaskRepository;
-use Factories\TaskFactory;
+use Arthur\TaskManager\Repositories\TaskRepository;
+use Arthur\TaskManager\Factories\TaskFactory;
 
 /**
  * Паттерн Facade для управления задачами.
@@ -19,10 +19,16 @@ class TaskManagerFacade
         $this->taskFactory = $taskFactory;
     }
 
-    public function createAndSaveTask(string $name, ?int $parentId = null)
+    public function createAndSaveTask(string $name, string $description, int $userId, ?int $parentId = null, string $status = 'in_progress')
     {
-        $task = $this->taskFactory->createTask($name, $parentId);
-        $this->taskRepository->createTask($task);
+        $task = $this->taskFactory->createTask($name, $description, $userId, $parentId, $status);
+        $this->taskRepository->createTask([
+            'name' => $name,
+            'description' => $description,
+            'user_id' => $userId,
+            'parent_id' => $parentId,
+            'status' => $status
+        ]);
     }
 
     public function getAllTasks(): array

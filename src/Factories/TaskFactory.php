@@ -1,8 +1,8 @@
 <?php
-namespace Factories;
+namespace Arthur\TaskManager\Factories;
 
-use Models\Task;
-use Interfaces\TaskFactoryInterface;
+use Arthur\TaskManager\Models\Task;
+use Arthur\TaskManager\Interfaces\TaskFactoryInterface;
 
 /**
  * Паттерн Factory Method для создания объектов Task.
@@ -10,8 +10,8 @@ use Interfaces\TaskFactoryInterface;
  */
 class TaskFactory implements TaskFactoryInterface
 {
-    public function createTask(string $name, ?int $parentId = null): Task
+    public function createTask(string $name, string $description, int $userId, ?int $parentId = null, string $status = 'in_progress'): Task
     {
-        return new Task($name, $parentId);
+        return new Task($name, $description, $userId, $parentId, $status);
     }
 }
