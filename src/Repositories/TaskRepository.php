@@ -1,8 +1,8 @@
 <?php
-namespace Repositories;
+namespace Arthur\TaskManager\Repositories;
 
-use Models\Task;
-use Interfaces\TaskRepositoryInterface;
+use Arthur\TaskManager\Models\Task;
+use Arthur\TaskManager\Interfaces\TaskRepositoryInterface;
 use PDO;
 
 /**
@@ -19,8 +19,20 @@ class TaskRepository implements TaskRepositoryInterface
 
     public function createTask(array $data): Task
     {
-        // Логика создания задачи
-        return new Task($data['name'], $data['parent_id']);
+        $query = "INSERT INTO tasks (name, description, user_id, parent_id, status, created_at, updated_at)
+                  VALUES (:name, :description, :user_id, :parent_id, :status, NOW(), NOW())";
+
+        $statement = $this->dbConnection->prepare($query);
+        $statement->execute([
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'user_id' => $data['user_id'],
+            'parent_id' => $data['parent_id'],
+            'status' => $data['status']
+        ]);
+
+        $id = $this->dbConnection->lastInsertId();
+        return new Task($data['name'], $data['description'], $data['user_id'], $data['parent_id'], $data['status'], '', '', $id);
     }
 
     public function getTaskById(int $id): ?Task
@@ -45,5 +57,27 @@ class TaskRepository implements TaskRepositoryInterface
     {
         // Логика получения задач пользователя
         return []; // Пример
+    }
+
+    public function getAllTasks(): array
+    {
+        $query = $this->dbConnection->query("SELECT * FROM tasks");
+        $tasks = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        $taskObjects = [];
+        foreach ($tasks as $taskData) {
+            $taskObjects[] = new Task(
+                $taskData['name'],
+                $taskData['description'],
+                $taskData['user_id'],
+                $taskData['parent_id'],
+                $taskData['status'],
+                $taskData['created_at'],
+                $taskData['updated_at'],
+                $taskData['id']
+            );
+        }
+
+        return $taskObjects;
     }
 }

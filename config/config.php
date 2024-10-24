@@ -7,8 +7,8 @@ return [
     'db' => [
         'host' => 'localhost',         // Хост базы данных
         'dbname' => 'task_manager',    // Имя базы данных
-        'user' => 'root',              // Имя пользователя
-        'password' => '',              // Пароль пользователя
+        'user' => 'smiths',              // Имя пользователя
+        'password' => 'cvbnc123',              // Пароль пользователя
         'charset' => 'utf8'            // Кодировка
     ]
 ];

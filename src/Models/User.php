@@ -1,5 +1,5 @@
 <?php
-namespace Models;
+namespace Arthur\TaskManager\Models;
 
 /**
  * Класс, представляющий пользователя.

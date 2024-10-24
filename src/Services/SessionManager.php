@@ -1,5 +1,5 @@
 <?php
-namespace Services;
+namespace Arthur\TaskManager\Services;
 
 /**
  * Сервис для управления сессиями пользователей.

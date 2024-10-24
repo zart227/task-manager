@@ -1,26 +1,27 @@
 <?php
-namespace Services;
+namespace Arthur\TaskManager\Services;
 
-use Repositories\UserRepository;
+use Arthur\TaskManager\Repositories\UserRepository;
+use Arthur\TaskManager\Factories\UserFactory;
 
 /**
- * Сервис для обработки регистрации и аутентификации пользователей.
+ * Сервис для регистрации и аутентификации пользователей.
  */
 class AuthService
 {
     private UserRepository $userRepository;
+    private UserFactory $userFactory;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, UserFactory $userFactory)
     {
         $this->userRepository = $userRepository;
+        $this->userFactory = $userFactory;
     }
 
     public function register(string $username, string $password)
     {
-        // Логика регистрации пользователя через UserRepository
-        $this->userRepository->createUser([
-            'username' => $username,
-            'password' => password_hash($password, PASSWORD_BCRYPT),
-        ]);
+        // Создание пользователя через фабрику
+        $user = $this->userFactory->createUser($username, $password);
+        $this->userRepository->createUser($user);
     }
 }

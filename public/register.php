@@ -1,14 +1,16 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Repositories\UserRepository;
-use Services\AuthService;
-use DB\DBConnection;
+use Arthur\TaskManager\Repositories\UserRepository;
+use Arthur\TaskManager\Services\AuthService;
+use Arthur\TaskManager\Factories\UserFactory;
+use Arthur\TaskManager\DB\DBConnection;
 
 // Инициализация компонентов
 $dbConnection = DBConnection::getInstance()->connect();
 $userRepository = new UserRepository($dbConnection);
-$authService = new AuthService($userRepository);
+$userFactory = new UserFactory();
+$authService = new AuthService($userRepository, $userFactory);
 
 // Обработка данных формы
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
