@@ -1,12 +1,13 @@
 <?php
-namespace DB;
+namespace Arthur\TaskManager\DB;
 
-use Interfaces\DBConnectionInterface;
+use Arthur\TaskManager\Interfaces\DBConnectionInterface;
 use PDO;
 use Exception;
 
 /**
- * Класс для подключения к базе данных, реализующий паттерн Singleton.
+ * Паттерн Singleton для управления подключением к базе данных.
+ * Обеспечивает наличие только одного экземпляра подключения.
  */
 final class DBConnection implements DBConnectionInterface
 {

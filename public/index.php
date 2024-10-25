@@ -20,6 +20,11 @@ switch ($requestUri) {
         // Страница регистрации
         include __DIR__ . '/register.php';
         break;
+
+    case '/login':
+        // Страница входа
+        include __DIR__ . '/login.php';
+        break;       
     
     case '/tasks':
         // Страница задач

@@ -1,8 +1,8 @@
 <?php
-namespace Repositories;
+namespace Arthur\TaskManager\Repositories;
 
-use Models\User;
-use Interfaces\UserRepositoryInterface;
+use Arthur\TaskManager\Models\User;
+use Arthur\TaskManager\Interfaces\UserRepositoryInterface;
 use PDO;
 
 /**
@@ -17,32 +17,72 @@ class UserRepository implements UserRepositoryInterface
         $this->dbConnection = $dbConnection;
     }
 
-    public function createUser(array $data): User
+    public function createUser(string $username, string $password, string $email): User
     {
-        // Реализация создания пользователя
-        $stmt = $this->dbConnection->prepare('INSERT INTO users (username, password) VALUES (:username, :password)');
+        $stmt = $this->dbConnection->prepare('INSERT INTO users (username, password, email) VALUES (:username, :password, :email)');
         $stmt->execute([
-            'username' => $data['username'],
-            'password' => password_hash($data['password'], PASSWORD_BCRYPT),
+            'username' => $username,
+            'password' => $password,
+            'email' => $email
         ]);
-        return new User($data['username'], $data['password'], $this->dbConnection->lastInsertId());
+    
+        return new User($this->dbConnection->lastInsertId(), $username, $password, $email);
     }
 
     public function getUserById(int $id): ?User
     {
-        // Логика получения пользователя по ID
-        return null; // Пример
+        // Получаем пользователя по ID
+        $stmt = $this->dbConnection->prepare('SELECT * FROM users WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+    
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if ($data) {
+            return new User(
+                $data['id'],
+                $data['username'],
+                $data['password'],
+                $data['email']  // Передаем email как четвертый аргумент
+            );
+        }
+    
+        return null;
+    }
+
+
+    public function getUserByUsername(string $username): ?User
+    {
+        $stmt = $this->dbConnection->prepare('SELECT * FROM users WHERE username = :username');
+        $stmt->execute(['username' => $username]);
+        $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if ($userData) {
+            return new User(
+                $userData['id'],
+                $userData['username'],
+                $userData['password'],
+                $userData['email']  // Передаем email как четвертый аргумент
+            );
+        }
+    
+        return null;  // Если пользователь не найден
     }
 
     public function updateUser(User $user): bool
     {
         // Логика обновления данных пользователя
-        return true; // Пример
+        $stmt = $this->dbConnection->prepare('UPDATE users SET username = :username, password = :password WHERE id = :id');
+        return $stmt->execute([
+            'username' => $user->getUsername(),
+            'password' => $user->getPassword(),
+            'id' => $user->getId(),
+        ]);
     }
 
     public function deleteUser(int $id): bool
     {
-        // Логика удаления пользователя
-        return true; // Пример
+        // Удаление пользователя
+        $stmt = $this->dbConnection->prepare('DELETE FROM users WHERE id = :id');
+        return $stmt->execute(['id' => $id]);
     }
 }

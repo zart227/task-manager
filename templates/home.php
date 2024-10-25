@@ -11,6 +11,7 @@
         <h1>Добро пожаловать в Менеджер задач!</h1>
         <p>Это простое PHP приложение для управления задачами. Используйте меню для регистрации и просмотра задач.</p>
         <a href="/register" class="btn btn-primary">Зарегистрироваться</a>
+        <a href="/login.php" class="btn btn-secondary">Войти</a>
         <a href="/tasks" class="btn btn-secondary">Посмотреть задачи</a>
     </div>
 </body>
