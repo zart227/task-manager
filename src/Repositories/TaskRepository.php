@@ -17,46 +17,86 @@ class TaskRepository implements TaskRepositoryInterface
         $this->dbConnection = $dbConnection;
     }
 
-    public function createTask(array $data): Task
+    public function createTask(string $name, string $description, int $userId, ?int $parentId, string $status): Task
     {
         $query = "INSERT INTO tasks (name, description, user_id, parent_id, status, created_at, updated_at)
                   VALUES (:name, :description, :user_id, :parent_id, :status, NOW(), NOW())";
 
         $statement = $this->dbConnection->prepare($query);
         $statement->execute([
-            'name' => $data['name'],
-            'description' => $data['description'],
-            'user_id' => $data['user_id'],
-            'parent_id' => $data['parent_id'],
-            'status' => $data['status']
+            'name' => $name,
+            'description' => $description,
+            'user_id' => $userId,
+            'parent_id' => $parentId,
+            'status' => $status
         ]);
 
         $id = $this->dbConnection->lastInsertId();
-        return new Task($data['name'], $data['description'], $data['user_id'], $data['parent_id'], $data['status'], '', '', $id);
+        return new Task($name, $description, $userId, $parentId, $status, '', '', $id);
     }
 
     public function getTaskById(int $id): ?Task
     {
-        // Логика получения задачи по ID
-        return null; // Пример
+        $stmt = $this->dbConnection->prepare('SELECT * FROM tasks WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+
+        $taskData = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($taskData) {
+            return new Task(
+                $taskData['name'],
+                $taskData['description'],
+                $taskData['user_id'],
+                $taskData['parent_id'],
+                $taskData['status'],
+                $taskData['created_at'],
+                $taskData['updated_at'],
+                $taskData['id']
+            );
+        }
+
+        return null; // Если задача не найдена
     }
 
     public function updateTask(Task $task): bool
     {
-        // Логика обновления задачи
-        return true; // Пример
+        $stmt = $this->dbConnection->prepare('UPDATE tasks SET name = :name, description = :description, user_id = :user_id, parent_id = :parent_id, status = :status, updated_at = NOW() WHERE id = :id');
+        return $stmt->execute([
+            'name' => $task->getName(),
+            'description' => $task->getDescription(),
+            'user_id' => $task->getUserId(),
+            'parent_id' => $task->getParentId(),
+            'status' => $task->getStatus(),
+            'id' => $task->getId(),
+        ]);
     }
 
     public function deleteTask(int $id): bool
     {
-        // Логика удаления задачи
-        return true; // Пример
+        $stmt = $this->dbConnection->prepare('DELETE FROM tasks WHERE id = :id');
+        return $stmt->execute(['id' => $id]);
     }
 
     public function getTasksByUserId(int $userId): array
     {
-        // Логика получения задач пользователя
-        return []; // Пример
+        $stmt = $this->dbConnection->prepare('SELECT * FROM tasks WHERE user_id = :user_id');
+        $stmt->execute(['user_id' => $userId]);
+        $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $taskObjects = [];
+        foreach ($tasks as $taskData) {
+            $taskObjects[] = new Task(
+                $taskData['name'],
+                $taskData['description'],
+                $taskData['user_id'],
+                $taskData['parent_id'],
+                $taskData['status'],
+                $taskData['created_at'],
+                $taskData['updated_at'],
+                $taskData['id']
+            );
+        }
+
+        return $taskObjects;
     }
 
     public function getAllTasks(): array

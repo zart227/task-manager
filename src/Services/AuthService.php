@@ -2,26 +2,47 @@
 namespace Arthur\TaskManager\Services;
 
 use Arthur\TaskManager\Repositories\UserRepository;
-use Arthur\TaskManager\Factories\UserFactory;
+use Arthur\TaskManager\Models\User;
 
-/**
- * Сервис для регистрации и аутентификации пользователей.
- */
 class AuthService
 {
     private UserRepository $userRepository;
-    private UserFactory $userFactory;
 
-    public function __construct(UserRepository $userRepository, UserFactory $userFactory)
+    public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
-        $this->userFactory = $userFactory;
     }
 
-    public function register(string $username, string $password)
+    public function register(string $username, string $password, string $email): bool
     {
-        // Создание пользователя через фабрику
-        $user = $this->userFactory->createUser($username, $password);
-        $this->userRepository->createUser($user);
+        // Проверяем, существует ли пользователь с таким именем
+        $existingUser = $this->userRepository->getUserByUsername($username);
+        if ($existingUser) {
+            return false; // Пользователь уже существует
+        }
+
+        // Хешируем пароль
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        // Создаем нового пользователя
+        $user = $this->userRepository->createUser($username, $hashedPassword, $email);
+
+        // Если создание прошло успешно, возвращаем true
+        if ($user instanceof User) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function login(string $username, string $password): ?User
+    {
+        $user = $this->userRepository->getUserByUsername($username);
+    
+        if ($user && password_verify($password, $user->getPassword())) {
+            return $user;
+        }
+    
+        return null;
     }
 }

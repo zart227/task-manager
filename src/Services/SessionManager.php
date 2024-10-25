@@ -26,6 +26,21 @@ class SessionManager
 
     public function destroySession(): void
     {
-        session_destroy();
+        if (session_status() !== PHP_SESSION_NONE) {
+            // Очищаем данные сессии
+            $_SESSION = [];
+
+            // Удаляем cookie сессии (если нужно)
+            if (ini_get("session.use_cookies")) {
+                $params = session_get_cookie_params();
+                setcookie(session_name(), '', time() - 42000,
+                    $params["path"], $params["domain"],
+                    $params["secure"], $params["httponly"]
+                );
+            }
+
+            // Закрываем сессию
+            session_destroy();
+        }
     }
 }

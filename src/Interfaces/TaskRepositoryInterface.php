@@ -9,7 +9,7 @@ use Arthur\TaskManager\Models\Task;
  */
 interface TaskRepositoryInterface
 {
-    public function createTask(array $data): Task;
+    public function createTask(string $name, string $description, int $userId, ?int $parentId, string $status): Task;
 
     public function getTaskById(int $id): ?Task;
 
