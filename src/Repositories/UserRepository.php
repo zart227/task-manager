@@ -3,6 +3,7 @@ namespace Arthur\TaskManager\Repositories;
 
 use Arthur\TaskManager\Models\User;
 use Arthur\TaskManager\Interfaces\UserRepositoryInterface;
+use Arthur\TaskManager\DB\DBConnection;
 use PDO;
 
 /**
@@ -12,9 +13,10 @@ class UserRepository implements UserRepositoryInterface
 {
     private PDO $dbConnection;
 
-    public function __construct(PDO $dbConnection)
+    public function __construct()
     {
-        $this->dbConnection = $dbConnection;
+        // Инициализируем подключение к базе данных через Singleton
+        $this->dbConnection = DBConnection::getInstance()->connect();
     }
 
     public function createUser(string $username, string $password, string $email): User
@@ -28,6 +30,7 @@ class UserRepository implements UserRepositoryInterface
     
         return new User($this->dbConnection->lastInsertId(), $username, $password, $email);
     }
+
 
     public function getUserById(int $id): ?User
     {
@@ -65,6 +68,24 @@ class UserRepository implements UserRepositoryInterface
             );
         }
     
+        return null;  // Если пользователь не найден
+    }
+
+    public function getUserByEmail(string $email): ?User
+    {
+        $stmt = $this->dbConnection->prepare('SELECT * FROM users WHERE email = :email');
+        $stmt->execute(['email' => $email]);
+        $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($userData) {
+            return new User(
+                $userData['id'],
+                $userData['username'],
+                $userData['password'],
+                $userData['email']  // Передаем email как аргумент
+            );
+        }
+
         return null;  // Если пользователь не найден
     }
 

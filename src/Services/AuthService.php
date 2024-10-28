@@ -13,12 +13,25 @@ class AuthService
         $this->userRepository = $userRepository;
     }
 
+     /**
+     * Регистрация пользователя с проверкой уникальности имени и email.
+     *
+     * @param string $username
+     * @param string $password
+     * @param string $email
+     * @return bool Возвращает true при успешной регистрации, иначе false.
+     */
     public function register(string $username, string $password, string $email): bool
     {
         // Проверяем, существует ли пользователь с таким именем
         $existingUser = $this->userRepository->getUserByUsername($username);
         if ($existingUser) {
             return false; // Пользователь уже существует
+        }
+
+        // Проверка существующего email
+        if ($this->userRepository->getUserByEmail($email)) {
+            return false;
         }
 
         // Хешируем пароль
@@ -35,6 +48,14 @@ class AuthService
         return false;
     }
 
+    /**
+     * Авторизация пользователя.
+     *
+     * @param string $username
+     * @param string $password
+     * @return User|null Возвращает пользователя при успешной авторизации, иначе null.
+     */
+
     public function login(string $username, string $password): ?User
     {
         $user = $this->userRepository->getUserByUsername($username);
@@ -44,5 +65,28 @@ class AuthService
         }
     
         return null;
+    }
+
+
+    /**
+     * Проверка, существует ли пользователь с данным именем.
+     *
+     * @param string $username
+     * @return bool
+     */
+    public function userExists(string $username): bool
+    {
+        return $this->userRepository->getUserByUsername($username) !== null;
+    }
+
+    /**
+     * Проверка, существует ли пользователь с данным email.
+     *
+     * @param string $email
+     * @return bool
+     */
+    public function emailExists(string $email): bool
+    {
+        return $this->userRepository->getUserByEmail($email) !== null;
     }
 }

@@ -3,6 +3,7 @@ namespace Arthur\TaskManager\Repositories;
 
 use Arthur\TaskManager\Models\Task;
 use Arthur\TaskManager\Interfaces\TaskRepositoryInterface;
+use Arthur\TaskManager\DB\DBConnection;
 use PDO;
 
 /**
@@ -12,12 +13,20 @@ class TaskRepository implements TaskRepositoryInterface
 {
     private PDO $dbConnection;
 
-    public function __construct(PDO $dbConnection)
+    public function __construct()
     {
-        $this->dbConnection = $dbConnection;
+        // Инициализируем подключение к базе данных через Singleton
+        $this->dbConnection = DBConnection::getInstance()->connect();
     }
 
-    public function createTask(string $name, string $description, int $userId, ?int $parentId, string $status): Task
+
+    public function createTask(
+        string $name, 
+        string $description, 
+        int $userId, 
+        ?int $parentId, 
+        string $status
+    ): Task
     {
         $query = "INSERT INTO tasks (name, description, user_id, parent_id, status, created_at, updated_at)
                   VALUES (:name, :description, :user_id, :parent_id, :status, NOW(), NOW())";
@@ -57,9 +66,21 @@ class TaskRepository implements TaskRepositoryInterface
         return null; // Если задача не найдена
     }
 
+    
+
     public function updateTask(Task $task): bool
     {
-        $stmt = $this->dbConnection->prepare('UPDATE tasks SET name = :name, description = :description, user_id = :user_id, parent_id = :parent_id, status = :status, updated_at = NOW() WHERE id = :id');
+        $stmt = $this->dbConnection->prepare(
+            'UPDATE tasks SET 
+                name = :name, 
+                description = :description, 
+                user_id = :user_id, 
+                parent_id = :parent_id, 
+                status = :status, 
+                updated_at = NOW() 
+            WHERE id = :id'
+        );
+        
         return $stmt->execute([
             'name' => $task->getName(),
             'description' => $task->getDescription(),
