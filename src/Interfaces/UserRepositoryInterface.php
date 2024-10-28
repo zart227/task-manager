@@ -1,7 +1,7 @@
 <?php
-namespace Interfaces;
+namespace Arthur\TaskManager\Interfaces;
 
-use Models\User;
+use Arthur\TaskManager\Models\User;
 
 /**
  * Интерфейс для работы с пользователями.
@@ -9,11 +9,13 @@ use Models\User;
  */
 interface UserRepositoryInterface
 {
-    public function createUser(array $data): User;
+    public function createUser(string $username, string $password, string $email): User;
 
     public function getUserById(int $id): ?User;
 
     public function updateUser(User $user): bool;
 
     public function deleteUser(int $id): bool;
+
+    public function getUserByUsername(string $username): ?User;
 }
