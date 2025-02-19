@@ -1,111 +1,234 @@
-# Task Manager
+# Laravel Task Manager API
 
-This is a simple PHP project for managing tasks. It includes user registration, task management, and hierarchical task display, all built using object-oriented principles. The project uses interfaces, repositories, and services to structure the code, and database interaction is handled via PDO.
+REST API для управления задачами с поддержкой вложенных задач и загрузки изображений.
 
-## Features
-- User registration with secure handling of form data using `POST` method.
-- Task management with hierarchical display of tasks (parent-child relationship).
-- Bootstrap-styled form with responsive design for registration.
-- Object-Oriented Programming (OOP) principles: interfaces, repositories, services.
-- PDO-based connection to the database for handling users and tasks.
+## Требования
 
-## Prerequisites
-To run this project, you need to have the following installed on your machine:
-- PHP (v7.4 or higher)
-- Apache web server (or any other compatible web server)
-- OpenServer (Windows) or LAMP stack (Linux)
-- MySQL or any other database that supports PDO
+- PHP 8.2+
+- Расширение GD для обработки изображений
+- Laravel 10.x
+- MySQL 5.7+ или PostgreSQL 9.6+
 
-## Installation
+## Установка и настройка
 
-### Step 1: Clone the repository
-To download the project files to your machine, clone this repository:
-
-```bash
-git clone https://github.com/yourusername/task-manager.git
-```
-
-### Step 2: Move the project to the web server directory
-For Ubuntu with LAMP, move the project to Apache's web directory:
-
-```bash
-sudo mv /path/to/cloned/repository/task-manager /var/www/html/
-```
-
-For Windows with OpenServer, move the project to the `domains` directory, usually located at `C:/OpenServer/domains/task-manager`.
-
-### Step 3: Set proper permissions (for Linux)
-Make sure the web server has the appropriate access to the project files:
-
-```bash
-sudo chmod -R 755 /var/www/html/task-manager
-```
-
-### Step 4: Configure the database
-1. Create a database for the project:
+1. Клонируйте репозиторий
+2. Установите зависимости:
    ```bash
-   mysql -u root -p
-   CREATE DATABASE task_manager;
+   composer install
    ```
-2. Import the database schema (if available) or create the necessary tables manually.
-3. Update the database connection settings in `config/config.php`:
-   ```php
-   'db' => [
-       'host' => 'localhost',
-       'dbname' => 'task_manager',
-       'user' => 'root',
-       'password' => '',
-       'charset' => 'utf8'
-   ]
+3. Скопируйте `.env.example` в `.env` и настройте подключение к базе данных
+4. Сгенерируйте ключ приложения:
+   ```bash
+   php artisan key:generate
+   ```
+5. Выполните миграции:
+   ```bash
+   php artisan migrate
+   ```
+6. Создайте символическую ссылку для хранения файлов:
+   ```bash
+   php artisan storage:link
+   ```
+7. Установите расширение GD для PHP (если не установлено):
+   ```bash
+   sudo apt-get install php8.2-gd
+   ```
+8. Запустите сервер:
+   ```bash
+   php artisan serve
    ```
 
-### Step 5: Start Apache
-Make sure your web server (Apache) is running. You can start or check the status using the following command for Linux:
+## API Документация
 
+### Аутентификация
+
+API использует токены для аутентификации через Laravel Sanctum. Все защищенные маршруты требуют заголовок `Authorization: Bearer {token}`.
+
+#### Регистрация
+
+```http
+POST /api/register
+
+{
+    "name": "Имя пользователя",
+    "email": "user@example.com",
+    "password": "password123",
+    "password_confirmation": "password123"
+}
+```
+
+Ответ (201 Created):
+```json
+{
+    "access_token": "1|abcdef...",
+    "token_type": "Bearer",
+    "user": {
+        "id": 1,
+        "name": "Имя пользователя",
+        "email": "user@example.com",
+        "created_at": "2024-02-19T17:00:00.000000Z",
+        "updated_at": "2024-02-19T17:00:00.000000Z"
+    }
+}
+```
+
+#### Вход
+
+```http
+POST /api/login
+
+{
+    "email": "user@example.com",
+    "password": "password123"
+}
+```
+
+Ответ (200 OK):
+```json
+{
+    "access_token": "2|abcdef...",
+    "token_type": "Bearer",
+    "user": {
+        "id": 1,
+        "name": "Имя пользователя",
+        "email": "user@example.com",
+        "created_at": "2024-02-19T17:00:00.000000Z",
+        "updated_at": "2024-02-19T17:00:00.000000Z"
+    }
+}
+```
+
+#### Выход
+
+```http
+POST /api/logout
+Authorization: Bearer {token}
+```
+
+Ответ (200 OK):
+```json
+{
+    "message": "Успешный выход из системы"
+}
+```
+
+#### Получение информации о пользователе
+
+```http
+GET /api/user
+Authorization: Bearer {token}
+```
+
+Ответ (200 OK):
+```json
+{
+    "id": 1,
+    "name": "Имя пользователя",
+    "email": "user@example.com",
+    "created_at": "2024-02-19T17:00:00.000000Z",
+    "updated_at": "2024-02-19T17:00:00.000000Z"
+}
+```
+
+### Управление задачами
+
+#### Создание задачи
+
+```http
+POST /api/tasks
+Authorization: Bearer {token}
+Content-Type: multipart/form-data
+
+{
+    "name": "Название задачи",
+    "description": "Описание задачи",
+    "status": "pending",
+    "parent_id": null,
+    "image": <file> // опционально
+}
+```
+
+Ответ (201 Created):
+```json
+{
+    "data": {
+        "id": 1,
+        "name": "Название задачи",
+        "description": "Описание задачи",
+        "status": "pending",
+        "parent_id": null,
+        "user_id": 1,
+        "image_url": "http://example.com/storage/tasks/image.jpg",
+        "created_at": "2024-02-19T17:00:00.000000Z",
+        "updated_at": "2024-02-19T17:00:00.000000Z"
+    }
+}
+```
+
+#### Обновление задачи
+
+```http
+PUT /api/tasks/{id}
+Authorization: Bearer {token}
+Content-Type: multipart/form-data
+
+{
+    "name": "Новое название",
+    "description": "Новое описание",
+    "status": "completed",
+    "parent_id": null,
+    "image": <file> // опционально
+}
+```
+
+Ответ (200 OK):
+```json
+{
+    "data": {
+        "id": 1,
+        "name": "Новое название",
+        "description": "Новое описание",
+        "status": "completed",
+        "parent_id": null,
+        "user_id": 1,
+        "image_url": "http://example.com/storage/tasks/new-image.jpg",
+        "created_at": "2024-02-19T17:00:00.000000Z",
+        "updated_at": "2024-02-19T17:00:00.000000Z"
+    }
+}
+```
+
+#### Получение списка задач
+
+```http
+GET /api/tasks
+Authorization: Bearer {token}
+```
+
+#### Получение конкретной задачи
+
+```http
+GET /api/tasks/{id}
+Authorization: Bearer {token}
+```
+
+#### Удаление задачи
+
+```http
+DELETE /api/tasks/{id}
+Authorization: Bearer {token}
+```
+
+### Работа с изображениями
+
+- Максимальный размер загружаемого изображения: 2MB
+- Поддерживаемые форматы: jpeg, png, bmp, gif, svg, webp
+- Изображения хранятся в директории `storage/app/public/tasks`
+- URL изображений доступен через поле `image_url` в ответе API
+
+## Тестирование
+
+Для запуска тестов API выполните:
 ```bash
-sudo systemctl start apache2
-sudo systemctl status apache2
+php artisan test tests/Feature/Api
 ```
-
-For Windows, start OpenServer by clicking the green flag in the OpenServer control panel.
-
-## Usage
-Once everything is set up, you can access the application in your browser.
-
-### Registration
-For Ubuntu with LAMP, open:
-
-```
-http://localhost/task-manager/register.php
-```
-
-For Windows with OpenServer, use the following:
-
-```
-http://task-manager/register.php
-```
-
-### Tasks
-To view the list of tasks:
-
-```
-http://localhost/task-manager/tasks.php
-```
-
-## Project Structure
-- **public/**
-  - **index.php**: Main entry point for routing the application.
-  - **register.php**: Handles user registration.
-  - **tasks.php**: Displays the list of tasks.
-- **src/**
-  - **Interfaces/**: Contains interfaces for repositories and database connections.
-  - **Models/**: Contains the `User` and `Task` models.
-  - **Repositories/**: Handles data interactions for users and tasks.
-  - **Services/**: Contains services like `AuthService` for user registration and authentication.
-  - **DB/**: Contains the `DBConnection` class that manages the database connection.
-- **templates/**: Contains the HTML templates for `register.php` and `tasks.php`.
-- **config/**: Contains the configuration file `config.php` for database settings.
-- **vendor/**: Autoloaded classes and dependencies managed by Composer.
-
-## License
-This project is licensed under the MIT License.
