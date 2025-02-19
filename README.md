@@ -1,111 +1,66 @@
-# Task Manager
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-This is a simple PHP project for managing tasks. It includes user registration, task management, and hierarchical task display, all built using object-oriented principles. The project uses interfaces, repositories, and services to structure the code, and database interaction is handled via PDO.
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-## Features
-- User registration with secure handling of form data using `POST` method.
-- Task management with hierarchical display of tasks (parent-child relationship).
-- Bootstrap-styled form with responsive design for registration.
-- Object-Oriented Programming (OOP) principles: interfaces, repositories, services.
-- PDO-based connection to the database for handling users and tasks.
+## About Laravel
 
-## Prerequisites
-To run this project, you need to have the following installed on your machine:
-- PHP (v7.4 or higher)
-- Apache web server (or any other compatible web server)
-- OpenServer (Windows) or LAMP stack (Linux)
-- MySQL or any other database that supports PDO
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-## Installation
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-### Step 1: Clone the repository
-To download the project files to your machine, clone this repository:
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-```bash
-git clone https://github.com/yourusername/task-manager.git
-```
+## Learning Laravel
 
-### Step 2: Move the project to the web server directory
-For Ubuntu with LAMP, move the project to Apache's web directory:
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-```bash
-sudo mv /path/to/cloned/repository/task-manager /var/www/html/
-```
+You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-For Windows with OpenServer, move the project to the `domains` directory, usually located at `C:/OpenServer/domains/task-manager`.
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-### Step 3: Set proper permissions (for Linux)
-Make sure the web server has the appropriate access to the project files:
+## Laravel Sponsors
 
-```bash
-sudo chmod -R 755 /var/www/html/task-manager
-```
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-### Step 4: Configure the database
-1. Create a database for the project:
-   ```bash
-   mysql -u root -p
-   CREATE DATABASE task_manager;
-   ```
-2. Import the database schema (if available) or create the necessary tables manually.
-3. Update the database connection settings in `config/config.php`:
-   ```php
-   'db' => [
-       'host' => 'localhost',
-       'dbname' => 'task_manager',
-       'user' => 'root',
-       'password' => '',
-       'charset' => 'utf8'
-   ]
-   ```
+### Premium Partners
 
-### Step 5: Start Apache
-Make sure your web server (Apache) is running. You can start or check the status using the following command for Linux:
+- **[Vehikl](https://vehikl.com/)**
+- **[Tighten Co.](https://tighten.co)**
+- **[WebReinvent](https://webreinvent.com/)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+- **[Cyber-Duck](https://cyber-duck.co.uk)**
+- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+- **[Jump24](https://jump24.co.uk)**
+- **[Redberry](https://redberry.international/laravel/)**
+- **[Active Logic](https://activelogic.com)**
+- **[byte5](https://byte5.de)**
+- **[OP.GG](https://op.gg)**
 
-```bash
-sudo systemctl start apache2
-sudo systemctl status apache2
-```
+## Contributing
 
-For Windows, start OpenServer by clicking the green flag in the OpenServer control panel.
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Usage
-Once everything is set up, you can access the application in your browser.
+## Code of Conduct
 
-### Registration
-For Ubuntu with LAMP, open:
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-```
-http://localhost/task-manager/register.php
-```
+## Security Vulnerabilities
 
-For Windows with OpenServer, use the following:
-
-```
-http://task-manager/register.php
-```
-
-### Tasks
-To view the list of tasks:
-
-```
-http://localhost/task-manager/tasks.php
-```
-
-## Project Structure
-- **public/**
-  - **index.php**: Main entry point for routing the application.
-  - **register.php**: Handles user registration.
-  - **tasks.php**: Displays the list of tasks.
-- **src/**
-  - **Interfaces/**: Contains interfaces for repositories and database connections.
-  - **Models/**: Contains the `User` and `Task` models.
-  - **Repositories/**: Handles data interactions for users and tasks.
-  - **Services/**: Contains services like `AuthService` for user registration and authentication.
-  - **DB/**: Contains the `DBConnection` class that manages the database connection.
-- **templates/**: Contains the HTML templates for `register.php` and `tasks.php`.
-- **config/**: Contains the configuration file `config.php` for database settings.
-- **vendor/**: Autoloaded classes and dependencies managed by Composer.
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
 ## License
-This project is licensed under the MIT License.
+
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
