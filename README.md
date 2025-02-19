@@ -64,3 +64,123 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+# Laravel Task Manager API
+
+## Аутентификация
+
+API использует токены для аутентификации через Laravel Sanctum. Все защищенные маршруты требуют заголовок `Authorization: Bearer {token}`.
+
+### Регистрация
+
+```http
+POST /api/register
+
+{
+    "name": "Имя пользователя",
+    "email": "user@example.com",
+    "password": "password123",
+    "password_confirmation": "password123"
+}
+```
+
+Ответ (201 Created):
+```json
+{
+    "access_token": "1|abcdef...",
+    "token_type": "Bearer",
+    "user": {
+        "id": 1,
+        "name": "Имя пользователя",
+        "email": "user@example.com",
+        "created_at": "2024-02-19T17:00:00.000000Z",
+        "updated_at": "2024-02-19T17:00:00.000000Z"
+    }
+}
+```
+
+### Вход
+
+```http
+POST /api/login
+
+{
+    "email": "user@example.com",
+    "password": "password123"
+}
+```
+
+Ответ (200 OK):
+```json
+{
+    "access_token": "2|abcdef...",
+    "token_type": "Bearer",
+    "user": {
+        "id": 1,
+        "name": "Имя пользователя",
+        "email": "user@example.com",
+        "created_at": "2024-02-19T17:00:00.000000Z",
+        "updated_at": "2024-02-19T17:00:00.000000Z"
+    }
+}
+```
+
+### Выход
+
+```http
+POST /api/logout
+Authorization: Bearer {token}
+```
+
+Ответ (200 OK):
+```json
+{
+    "message": "Успешный выход из системы"
+}
+```
+
+### Получение информации о пользователе
+
+```http
+GET /api/user
+Authorization: Bearer {token}
+```
+
+Ответ (200 OK):
+```json
+{
+    "id": 1,
+    "name": "Имя пользователя",
+    "email": "user@example.com",
+    "created_at": "2024-02-19T17:00:00.000000Z",
+    "updated_at": "2024-02-19T17:00:00.000000Z"
+}
+```
+
+## Установка и настройка
+
+1. Клонируйте репозиторий
+2. Установите зависимости:
+   ```bash
+   composer install
+   ```
+3. Скопируйте `.env.example` в `.env` и настройте подключение к базе данных
+4. Сгенерируйте ключ приложения:
+   ```bash
+   php artisan key:generate
+   ```
+5. Выполните миграции:
+   ```bash
+   php artisan migrate
+   ```
+6. Запустите сервер:
+   ```bash
+   php artisan serve
+   ```
+
+## Тестирование
+
+Для запуска тестов API выполните:
+```bash
+php artisan test tests/Feature/Api/AuthTest.php
+```
