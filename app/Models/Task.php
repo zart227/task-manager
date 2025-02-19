@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Task extends Model
 {
@@ -17,8 +18,11 @@ class Task extends Model
         'description',
         'user_id',
         'parent_id',
-        'status'
+        'status',
+        'image_path',
     ];
+
+    protected $appends = ['image_url'];
 
     protected $casts = [
         'created_at' => 'datetime',
@@ -47,5 +51,12 @@ class Task extends Model
     public function children(): HasMany
     {
         return $this->hasMany(Task::class, 'parent_id');
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->image_path
+            ? Storage::disk('public')->url($this->image_path)
+            : null;
     }
 }

@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class TaskController extends Controller
 {
@@ -36,12 +37,19 @@ class TaskController extends Controller
      */
     public function store(TaskRequest $request): TaskResource
     {
+        $data = $request->validated();
+        
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('tasks', 'public');
+        }
+
         $task = $this->taskRepository->createTask(
-            $request->name,
-            $request->description,
+            $data['name'],
+            $data['description'],
             Auth::id(),
-            $request->parent_id,
-            $request->status
+            $data['parent_id'] ?? null,
+            $data['status'],
+            $data['image_path'] ?? null
         );
 
         return new TaskResource($task);
@@ -64,7 +72,17 @@ class TaskController extends Controller
     {
         $this->authorize('update', $task);
 
-        $task->fill($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            // Удаляем старое изображение, если оно есть
+            if ($task->image_path) {
+                Storage::disk('public')->delete($task->image_path);
+            }
+            $data['image_path'] = $request->file('image')->store('tasks', 'public');
+        }
+
+        $task->fill($data);
         $this->taskRepository->updateTask($task);
 
         return new TaskResource($task->fresh());
@@ -76,6 +94,11 @@ class TaskController extends Controller
     public function destroy(Task $task): JsonResponse
     {
         $this->authorize('delete', $task);
+        
+        // Удаляем изображение, если оно есть
+        if ($task->image_path) {
+            Storage::disk('public')->delete($task->image_path);
+        }
         
         $this->taskRepository->deleteTask($task->id);
 

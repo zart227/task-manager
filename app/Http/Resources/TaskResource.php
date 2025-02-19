@@ -21,6 +21,7 @@ class TaskResource extends JsonResource
             'status' => $this->status,
             'parent_id' => $this->parent_id,
             'user_id' => $this->user_id,
+            'image_url' => $this->image_url,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'children' => TaskResource::collection($this->whenLoaded('children')),

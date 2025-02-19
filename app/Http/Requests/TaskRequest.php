@@ -26,6 +26,7 @@ class TaskRequest extends FormRequest
             'description' => 'required|string',
             'status' => 'required|in:in_progress,completed,pending',
             'parent_id' => 'nullable|exists:tasks,id',
+            'image' => 'nullable|image|max:2048', // максимум 2MB
         ];
     }
 
@@ -38,6 +39,8 @@ class TaskRequest extends FormRequest
             'status.required' => 'Статус задачи обязателен',
             'status.in' => 'Недопустимый статус задачи',
             'parent_id.exists' => 'Указанная родительская задача не существует',
+            'image.image' => 'Файл должен быть изображением',
+            'image.max' => 'Размер изображения не должен превышать 2MB',
         ];
     }
 }

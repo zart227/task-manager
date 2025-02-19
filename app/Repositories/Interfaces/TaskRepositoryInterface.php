@@ -7,7 +7,14 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface TaskRepositoryInterface
 {
-    public function createTask(string $name, string $description, int $userId, ?int $parentId, string $status): Task;
+    public function createTask(
+        string $name,
+        string $description,
+        int $userId,
+        ?int $parentId,
+        string $status,
+        ?string $imagePath = null
+    ): Task;
 
     public function getTaskById(int $id): ?Task;
 

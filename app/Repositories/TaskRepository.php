@@ -8,14 +8,21 @@ use Illuminate\Database\Eloquent\Collection;
 
 class TaskRepository implements TaskRepositoryInterface
 {
-    public function createTask(string $name, string $description, int $userId, ?int $parentId, string $status): Task
-    {
+    public function createTask(
+        string $name,
+        string $description,
+        int $userId,
+        ?int $parentId,
+        string $status,
+        ?string $imagePath = null
+    ): Task {
         return Task::create([
             'name' => $name,
             'description' => $description,
             'user_id' => $userId,
             'parent_id' => $parentId,
-            'status' => $status
+            'status' => $status,
+            'image_path' => $imagePath,
         ]);
     }
 
